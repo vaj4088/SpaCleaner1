@@ -2,6 +2,10 @@
 #include "SpaCleaner1.h"
 #include <VarSpeedServo.h>
 //
+// Original as modified by IBS Ian Shef 12 July 2016
+//
+
+//
 // Change these constants to match hardware.
 //
 const byte panelPin = 9;       // The digital pin used for the servo that
