@@ -12,11 +12,14 @@ const byte panelPin = 9;       // The digital pin used for the servo that
                                // operates the panel on/off button.
 const byte filterPumpPin = 10; // The digital pin used for the servo that
                                // operates the filter on/off button.
+const byte ledPin = 13 ;       // The pin for the built-in LED.
 //
 // Useful constants, do not change.
 //
 const bool WAIT = true ;
 const bool DONTWAIT = false ;
+const int ON  = HIGH ;
+const int OFF =  LOW ;
 //
 // Object definitions.
 //
@@ -43,12 +46,14 @@ void loop()
 	//
 	  panel.write(180,255,DONTWAIT) ;  // Move the panel servo to 180 degrees,
 	                                   // fast speed, run in background.
-	  filterPump.write(180,255,WAIT) ; // Move the filter pump servo
-	                                   // to 180 degrees,
+	  filterPump.write(0,255,WAIT) ;   // Move the filter pump servo
+	                                   // to 0 degrees,
 	                                   // fast speed, wait until done.
+	  digitalWrite(ledPin, ON) ;       // Built-in red LED turns on.
 	  panel.write(0,30,DONTWAIT) ;     // Move the panel servo to 0 degrees,
 	                                   // slow speed, run in background.
-	  filterPump.write(0,30,WAIT) ;    // Move the filter pump servo
-	                                   // to 0 degrees,
+	  filterPump.write(180,30,WAIT) ;  // Move the filter pump servo
+	                                   // to 180 degrees,
 	                                   // slow speed, wait until done.
+	  digitalWrite(ledPin, OFF) ;      // Built-in red LED turns off.
 }
