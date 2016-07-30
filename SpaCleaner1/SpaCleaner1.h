@@ -21,6 +21,7 @@ void setup();
 #endif
 
 //add your function definitions for the project SpaCleaner1 here
+void reduceUnusedPinPower() ;
 
 
 

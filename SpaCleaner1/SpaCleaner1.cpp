@@ -1,16 +1,18 @@
 // Do not remove the include below
 #include "SpaCleaner1.h"
-#include <VarSpeedServo.h>
 //
 // Original as modified by IBS Ian Shef 12 July 2016
+//
+// Major modifications by IBS Ian Shef 30 July 2016 to change from
+// operating servos to operating relays.
 //
 
 //
 // Change these constants to match hardware.
 //
-const byte panelPin = 9;       // The digital pin used for the servo that
+const byte panelPin = 9;       // The digital pin used for the relay that
                                // operates the panel on/off button.
-const byte filterPumpPin = 10; // The digital pin used for the servo that
+const byte filterPumpPin = 10; // The digital pin used for the relay that
                                // operates the filter on/off button.
 const byte ledPin = 13 ;       // The pin for the built-in LED.
 //
@@ -20,40 +22,62 @@ const bool WAIT = true ;
 const bool DONTWAIT = false ;
 const int ON  = HIGH ;
 const int OFF =  LOW ;
+const int millisPerSecond = 1000 ;
+const int secondsPerMinute = 60 ;
+const int minutesPerHour = 60 ;
 //
-// Object definitions.
+//  Change these constants as needed for proper operation
 //
-VarSpeedServo panel ;       // Create a servo object to control the panel servo.
-VarSpeedServo filterPump ;  // Create a servo object to control the
+const int powerOnDelayMillis = 5000 ; 	// Wait this many milliseconds
+										// after power has been applied.
+const int buttonOnTime = 500 ; 			// Turn on button or relay for
+										// this many milliseconds.
+const double filterTimeHours = 2.0 ;	// How long to filter,
+										// in decimal hours.
+const double filterPeriodHours = 24 ;	// How long from start of filter to
+										// next start of filter,
+										// in decimal hours.
+//
+//  Calculated constants
+//
+const unsigned long filterTimeMillis = filterTimeHours *
+		millisPerSecond * secondsPerMinute * minutesPerHour ;
+const unsigned long filterPeriodMillis = filterPeriodMillis *
+		millisPerSecond * secondsPerMinute * minutesPerHour ;
+//
+// Object definitions, if any.
+//
+
+//
+// enum definitions, if any
+//
+enum State {WAITING_FOR_TURN_ON, WAITING_TO_TURN_OFF} ;
+
 void setup()
 {
-	  panel.attach(panelPin) ;        // Attaches the panel servo pin
-	                                  // to the panel servo object.
-	  panel.write(0,255,DONTWAIT) ;   // Sets the initial position of
-	                                  // the panel servo,
-	                                  // as fast as possible, run in background
-	  filterPump.attach(filterPumpPin) ; // Attaches the filter pump servo pin
-	                                     // to the filter pump servo object.
-	  filterPump.write(0,255,WAIT) ;     // Sets the initial position of the
-	                                     // filter pump servo,
-	                                     // as fast as possible,
-	                                     // wait until done.
-}
+	pinMode(panelPin,  OUTPUT) ;
+	digitalWrite(panelPin, OFF) ;
+	pinMode(filterPumpPin, OUTPUT) ;
+	digitalWrite(filterPumpPin, OFF) ;
+	pinMode(ledPin, OUTPUT) ;
+	digitalWrite(ledPin, OFF) ;
+	reduceUnusedPinPower() ;
+	delay(powerOnDelayMillis) ;
+	}
 void loop()
 {
+	unsigned long currentTime = millis() ;
+	digitalWrite(ledPin, ON) ;       // Built-in red LED turns on.
+	digitalWrite(ledPin, OFF) ;      // Built-in red LED turns off.
+}
+void reduceUnusedPinPower() {
 	//
-    // .write(degrees 0-180, speed 1-255, wait to complete true-false)
+	// The following reduces power at unused pins.
 	//
-	  panel.write(180,255,DONTWAIT) ;  // Move the panel servo to 180 degrees,
-	                                   // fast speed, run in background.
-	  filterPump.write(0,255,WAIT) ;   // Move the filter pump servo
-	                                   // to 0 degrees,
-	                                   // fast speed, wait until done.
-	  digitalWrite(ledPin, ON) ;       // Built-in red LED turns on.
-	  panel.write(0,30,DONTWAIT) ;     // Move the panel servo to 0 degrees,
-	                                   // slow speed, run in background.
-	  filterPump.write(180,30,WAIT) ;  // Move the filter pump servo
-	                                   // to 180 degrees,
-	                                   // slow speed, wait until done.
-	  digitalWrite(ledPin, OFF) ;      // Built-in red LED turns off.
+	for (int i = 2; i<=13; i++) {
+		if ((i!=panelPin)&&(i!=filterPumpPin)&&(i!=ledPin)) {
+			pinMode(i, INPUT_PULLUP) ;
+			digitalWrite(i,OFF) ;
+		}
+	}
 }
