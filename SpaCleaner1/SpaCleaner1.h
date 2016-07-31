@@ -21,9 +21,13 @@ void setup();
 #endif
 
 //add your function definitions for the project SpaCleaner1 here
-void reduceUnusedPinPower() ;
-
-
+void pressPanelButton() ;
+void releasePanelButton() ;
+void pressFilterButton() ;
+void releaseFilterButton() ;
+void turnLedOn() ;
+void turnLedOff() ;
+void newState(State x) ;
 
 
 //Do not add code below this line

@@ -32,6 +32,8 @@ const int powerOnDelayMillis = 5000 ; 	// Wait this many milliseconds
 										// after power has been applied.
 const int buttonOnTime = 500 ; 			// Turn on button or relay for
 										// this many milliseconds.
+const int buttonToButtonTime = 1000 ;	// Wait between buttons for
+										// this many milliseconds.
 const double filterTimeHours = 2.0 ;	// How long to filter,
 										// in decimal hours.
 const double filterPeriodHours = 24 ;	// How long from start of filter to
@@ -51,7 +53,22 @@ const unsigned long filterPeriodMillis = filterPeriodMillis *
 //
 // enum definitions, if any
 //
-enum State {WAITING_FOR_TURN_ON, WAITING_TO_TURN_OFF} ;
+enum State {RESET,
+	WAIT_TO_PRESS_PANEL_BUTTON,
+	WAIT_TO_RELEASE_PANEL_BUTTON,
+	WAIT_TO_PRESS_FILTER_BUTTON,
+	WAIT_TO_RELEASE_FILTER_BUTTON,
+	WAIT_TO_PRESS_PANELBUTTON2,
+	WAIT_TO_RELEASE_PANEL_BUTTON2
+} ;
+
+//
+// Global variables
+//
+State state = RESET ;
+unsigned long lastActionTime ;	// The processor time (in milliseconds)
+								// when the last significant action was taken,
+								// which is the same as when the state changes.
 
 void setup()
 {
@@ -62,13 +79,40 @@ void setup()
 	pinMode(ledPin, OUTPUT) ;
 	digitalWrite(ledPin, OFF) ;
 	reduceUnusedPinPower() ;
-	delay(powerOnDelayMillis) ;
+	lastActionTime = millis() ;
 	}
 void loop()
 {
 	unsigned long currentTime = millis() ;
-	digitalWrite(ledPin, ON) ;       // Built-in red LED turns on.
-	digitalWrite(ledPin, OFF) ;      // Built-in red LED turns off.
+	switch (state) {
+	case RESET:
+		if (currentTime-lastActionTime>=powerOnDelayMillis) {
+			pressPanelButton() ;
+			newState(WAIT_TO_RELEASE_PANEL_BUTTON) ;
+		}
+		break ;
+	case WAIT_TO_PRESS_PANEL_BUTTON:
+		newState(WAIT_TO_RELEASE_PANEL_BUTTON) ;
+		break ;
+	case WAIT_TO_RELEASE_PANEL_BUTTON:
+		newState(WAIT_TO_PRESS_FILTER_BUTTON) ;
+		break ;
+	case WAIT_TO_PRESS_FILTER_BUTTON:
+		newState(WAIT_TO_RELEASE_FILTER_BUTTON) ;
+		break ;
+	case WAIT_TO_RELEASE_FILTER_BUTTON:
+		newState(WAIT_TO_PRESS_PANELBUTTON2) ;
+		break ;
+	case WAIT_TO_PRESS_PANELBUTTON2:
+		newState(WAIT_TO_RELEASE_PANEL_BUTTON2) ;
+		break ;
+	case WAIT_TO_RELEASE_PANEL_BUTTON2:
+		newState(WAIT_TO_PRESS_PANEL_BUTTON) ;
+		break ;
+	default:
+		newState(RESET) ;
+		break ;  // Unnecessary but makes Eclipse compiler happy.
+	}
 }
 void reduceUnusedPinPower() {
 	//
@@ -81,3 +125,26 @@ void reduceUnusedPinPower() {
 		}
 	}
 }
+void pressPanelButton() {
+	digitalWrite(panelPin, ON) ;
+}
+void releasePanelButton() {
+	digitalWrite(panelPin, OFF) ;
+}
+void pressFilterButton() {
+	digitalWrite(filterPumpPin, ON) ;
+}
+void releaseFilterButton() {
+	digitalWrite(filterPumpPin, OFF) ;
+}
+void turnLedOn() {
+	digitalWrite(ledPin, ON) ;       // Built-in red LED turns on.
+}
+void turnLedOff() {
+	digitalWrite(ledPin, OFF) ;       // Built-in red LED turns off.
+}
+void newState(State x) {
+	state = x ;
+	lastActionTime=millis() ;
+}
+
