@@ -18,7 +18,7 @@
 						<toolChain errorParsers="" id="it.baeyens.avreclipse.toolchain.winavr.app.release.1541523839" name="AVR-GCC Toolchain" superClass="it.baeyens.avreclipse.toolchain.winavr.app.release">
 							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release.1046730981" name="Generate HEX file for Flash memory" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objcopy.flash.app.release"/>
 							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objcopy.eeprom.app.release.219589584" name="Generate HEX file for EEPROM" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objcopy.eeprom.app.release" value="true" valueType="boolean"/>
-							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.app.release.615307235" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.app.release" value="true" valueType="boolean"/>
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.app.release.615307235" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.app.release" value="false" valueType="boolean"/>
 							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.app.release.1878891254" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.app.release"/>
 							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.avrdude.app.release.1381992110" name="AVRDude" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.avrdude.app.release"/>
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="it.baeyens.avreclipse.targetplatform.winavr.app.release.231503348" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.app.release"/>
@@ -119,4 +119,5 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="SpaCleaner1.null.1896325646" name="SpaCleaner1"/>
 	</storageModule>
+	<storageModule moduleId="refreshScope"/>
 </cproject>
