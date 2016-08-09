@@ -84,18 +84,6 @@ const double filterPeriodHours = 24 ;	// How long from start of filter to
 //
 
 //
-// enum definitions, if any
-//
-enum State {RESET,
-	WAIT_TO_PRESS_PANEL_BUTTON,
-	WAIT_TO_RELEASE_PANEL_BUTTON,
-	WAIT_TO_PRESS_FILTER_BUTTON,
-	WAIT_TO_RELEASE_FILTER_BUTTON,
-	WAIT_TO_PRESS_PANELBUTTON2,
-	WAIT_TO_RELEASE_PANEL_BUTTON2
-} ;
-
-//
 // Global variables
 //
 State state = RESET ;

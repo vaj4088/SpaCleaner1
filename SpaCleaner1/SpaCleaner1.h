@@ -20,7 +20,20 @@ void setup();
 } // extern "C"
 #endif
 
+//
+// enum definitions, if any
+//
+enum State {RESET,
+	WAIT_TO_PRESS_PANEL_BUTTON,
+	WAIT_TO_RELEASE_PANEL_BUTTON,
+	WAIT_TO_PRESS_FILTER_BUTTON,
+	WAIT_TO_RELEASE_FILTER_BUTTON,
+	WAIT_TO_PRESS_PANELBUTTON2,
+	WAIT_TO_RELEASE_PANEL_BUTTON2
+} ;
+
 //add your function definitions for the project SpaCleaner1 here
+void reduceUnusedPinPower() ;
 void pressPanelButton() ;
 void releasePanelButton() ;
 void pressFilterButton() ;
