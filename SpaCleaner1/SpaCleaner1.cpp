@@ -7,6 +7,28 @@
 // operating servos to operating relays.
 //
 
+// From Nick Gammon in Australia on 31 July 2016
+// from URL http://www.gammon.com.au/millis
+/*
+ * Recommended method for performing timing
+
+> Use unsigned long (not just long) for "time" variables.
+> Record the start time of some event
+  (eg. a debounce, when you start feeding the fish, etc.)
+> Subtract the start time from the time now, giving a difference.
+> See if the difference exceeds the desired interval.
+
+eg.
+
+startedFeedingFish = millis ();
+...
+if (millis () - startedFeedingFish >= 20000)  // feed them for 20 seconds
+  {
+  // stop feeding the fish
+  }
+
+ */
+
 //
 // Change these constants to match hardware.
 //
@@ -28,12 +50,13 @@ const int minutesPerHour = 60 ;
 //
 //  Change these constants as needed for proper operation
 //
-const int powerOnDelayMillis = 5000 ; 	// Wait this many milliseconds
-										// after power has been applied.
-const int buttonOnTime = 500 ; 			// Turn on button or relay for
-										// this many milliseconds.
-const int buttonToButtonTime = 1000 ;	// Wait between buttons for
-										// this many milliseconds.
+const unsigned long powerOnDelayMillis = 5000 ; // Wait this many
+												// milliseconds
+												// after power has been applied.
+const unsigned long buttonOnTime = 500 ; 		// Turn on button or relay for
+												// this many milliseconds.
+const unsigned long buttonToButtonTime = 3000 ;	// Wait between buttons for
+												// this many milliseconds.
 const double filterTimeHours = 2.0 ;	// How long to filter,
 										// in decimal hours.
 const double filterPeriodHours = 24 ;	// How long from start of filter to
@@ -42,10 +65,16 @@ const double filterPeriodHours = 24 ;	// How long from start of filter to
 //
 //  Calculated constants
 //
-const unsigned long filterTimeMillis = filterTimeHours *
-		millisPerSecond * secondsPerMinute * minutesPerHour ;
-const unsigned long filterPeriodMillis = filterPeriodMillis *
-		millisPerSecond * secondsPerMinute * minutesPerHour ;
+#define TEST 1
+#ifdef TEST
+	const unsigned long filterTimeMillis = 4 * millisPerSecond ;
+	const unsigned long filterPeriodMillis = 10 * millisPerSecond ;
+#else
+	const unsigned long filterTimeMillis = filterTimeHours *
+			millisPerSecond * secondsPerMinute * minutesPerHour ;
+	const unsigned long filterPeriodMillis = filterPeriodHours *
+			millisPerSecond * secondsPerMinute * minutesPerHour ;
+#endif
 //
 // Object definitions, if any.
 //
@@ -69,6 +98,8 @@ State state = RESET ;
 unsigned long lastActionTime ;	// The processor time (in milliseconds)
 								// when the last significant action was taken,
 								// which is the same as when the state changes.
+unsigned long lastFilterTime ;	// The processor time (in milliseconds)
+								// when the last filtering started.
 
 void setup()
 {
@@ -83,31 +114,54 @@ void setup()
 	}
 void loop()
 {
-	unsigned long currentTime = millis() ;
+	const unsigned long currentTime = millis() ;
 	switch (state) {
 	case RESET:
 		if (currentTime-lastActionTime>=powerOnDelayMillis) {
+			turnLedOn() ;
+			lastFilterTime = currentTime ;
 			pressPanelButton() ;
 			newState(WAIT_TO_RELEASE_PANEL_BUTTON) ;
 		}
 		break ;
 	case WAIT_TO_PRESS_PANEL_BUTTON:
-		newState(WAIT_TO_RELEASE_PANEL_BUTTON) ;
+		if (currentTime-lastFilterTime>=filterPeriodMillis) {
+			turnLedOn() ;
+			lastFilterTime = currentTime ;
+			pressPanelButton() ;
+			newState(WAIT_TO_RELEASE_PANEL_BUTTON) ;
+		}
 		break ;
 	case WAIT_TO_RELEASE_PANEL_BUTTON:
-		newState(WAIT_TO_PRESS_FILTER_BUTTON) ;
+		if (currentTime-lastActionTime>=buttonOnTime) {
+			releasePanelButton() ;
+			newState(WAIT_TO_PRESS_FILTER_BUTTON) ;
+		}
 		break ;
 	case WAIT_TO_PRESS_FILTER_BUTTON:
-		newState(WAIT_TO_RELEASE_FILTER_BUTTON) ;
+		if (currentTime-lastActionTime>=buttonToButtonTime) {
+			pressFilterButton() ;
+			newState(WAIT_TO_RELEASE_FILTER_BUTTON) ;
+		}
 		break ;
 	case WAIT_TO_RELEASE_FILTER_BUTTON:
-		newState(WAIT_TO_PRESS_PANELBUTTON2) ;
+		if (currentTime-lastActionTime>=buttonOnTime) {
+			releaseFilterButton() ;
+			newState(WAIT_TO_PRESS_PANELBUTTON2) ;
+		}
 		break ;
 	case WAIT_TO_PRESS_PANELBUTTON2:
-		newState(WAIT_TO_RELEASE_PANEL_BUTTON2) ;
+		if (currentTime-lastActionTime>=filterTimeMillis) {
+			pressPanelButton() ;
+			newState(WAIT_TO_RELEASE_PANEL_BUTTON2) ;
+		}
 		break ;
 	case WAIT_TO_RELEASE_PANEL_BUTTON2:
-		newState(WAIT_TO_PRESS_PANEL_BUTTON) ;
+		if (currentTime-lastActionTime>=buttonOnTime) {
+			releasePanelButton() ;
+			newState(WAIT_TO_PRESS_PANEL_BUTTON) ;
+			turnLedOff() ;
+		}
 		break ;
 	default:
 		newState(RESET) ;
