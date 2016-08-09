@@ -5,6 +5,10 @@
 //
 // Major modifications by IBS Ian Shef 30 July 2016 to change from
 // operating servos to operating relays.
+
+// Completed modifications and commit message
+// IBS Ian Shef 9 August 2016
+// to change from operating servos to operating relays.
 //
 
 // From Nick Gammon in Australia on 31 July 2016
