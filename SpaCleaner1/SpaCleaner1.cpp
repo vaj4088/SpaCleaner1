@@ -69,10 +69,10 @@ const double filterPeriodHours = 24 ;	// How long from start of filter to
 //
 //  Calculated constants
 //
-#define TEST 1
+// #define TEST 1
 #ifdef TEST
-	const unsigned long filterTimeMillis = 4 * millisPerSecond ;
-	const unsigned long filterPeriodMillis = 10 * millisPerSecond ;
+	const unsigned long filterTimeMillis = 3 * millisPerSecond ;
+	const unsigned long filterPeriodMillis = 20 * millisPerSecond ;
 #else
 	const unsigned long filterTimeMillis = filterTimeHours *
 			millisPerSecond * secondsPerMinute * minutesPerHour ;
