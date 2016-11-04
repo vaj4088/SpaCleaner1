@@ -10,6 +10,9 @@
 // IBS Ian Shef 9 August 2016
 // to change from operating servos to operating relays.
 //
+// Adjustment for timing drift added
+// IBS Ian Shef 4 November 2016
+//
 
 // From Nick Gammon in Australia on 31 July 2016
 // from URL http://www.gammon.com.au/millis
@@ -44,8 +47,6 @@ const byte ledPin = 13 ;       // The pin for the built-in LED.
 //
 // Useful constants, do not change.
 //
-const bool WAIT = true ;
-const bool DONTWAIT = false ;
 const int ON  = HIGH ;
 const int OFF =  LOW ;
 const int millisPerSecond = 1000 ;
@@ -67,6 +68,18 @@ const double filterPeriodHours = 24 ;	// How long from start of filter to
 										// next start of filter,
 										// in decimal hours.
 //
+// driftAdjustSeconds adjusts for the clock oscillator not being exactly on
+// frequency.
+// The number used here is the number of seconds of drift experienced every
+// 24 hours.  It does not affect the filter run time (filterTimeHours),
+// but will be used to adjust the time between filter runs (filterPeriodHours).
+// Use a positive value when the filter runs would be getting   later and
+//   later.
+// Use a negative value when the filter runs would be getting earlier and
+// earlier.
+//
+const long driftAdjustSeconds = -60 ;
+//
 //  Calculated constants
 //
 // #define TEST 1
@@ -77,7 +90,8 @@ const double filterPeriodHours = 24 ;	// How long from start of filter to
 	const unsigned long filterTimeMillis = filterTimeHours *
 			millisPerSecond * secondsPerMinute * minutesPerHour ;
 	const unsigned long filterPeriodMillis = filterPeriodHours *
-			millisPerSecond * secondsPerMinute * minutesPerHour ;
+			millisPerSecond * secondsPerMinute * minutesPerHour +
+			driftAdjustSeconds * secondsPerMinute * minutesPerHour ;
 #endif
 //
 // Object definitions, if any.
