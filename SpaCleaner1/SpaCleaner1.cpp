@@ -12,6 +12,9 @@
 //
 // Adjustment for timing drift added
 // IBS Ian Shef 4 November 2016
+
+// Correct the calculation for timing drift.
+// IBS Ian Shef 5 November 2016
 //
 
 // From Nick Gammon in Australia on 31 July 2016
@@ -91,7 +94,8 @@ const long driftAdjustSeconds = -60 ;
 			millisPerSecond * secondsPerMinute * minutesPerHour ;
 	const unsigned long filterPeriodMillis = filterPeriodHours *
 			millisPerSecond * secondsPerMinute * minutesPerHour +
-			driftAdjustSeconds * secondsPerMinute * minutesPerHour ;
+													//  IBS Ian Shef 5 Nov 2016
+			driftAdjustSeconds * millisPerSecond ;  //  IBS Ian Shef 4 Nov 2016
 #endif
 //
 // Object definitions, if any.
