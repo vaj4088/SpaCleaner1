@@ -1,6 +1,9 @@
 // Do not remove the include below
 #include "SpaCleaner1.h"
 //
+// #define DEBUG0 1
+//
+//
 // Original as modified by IBS Ian Shef 12 July 2016
 //
 // Major modifications by IBS Ian Shef 30 July 2016 to change from
@@ -15,6 +18,14 @@
 
 // Correct the calculation for timing drift.
 // IBS Ian Shef 5 November 2016
+//
+
+// Output the values.
+// IBS Ian Shef 21 Nov 2016
+//
+
+// Make output of the values dependent upon the definition of DEBUG0
+// IBS  Ian Shef  9 Dec 2016
 //
 
 // From Nick Gammon in Australia on 31 July 2016
@@ -76,12 +87,12 @@ const double filterPeriodHours = 24 ;	// How long from start of filter to
 // The number used here is the number of seconds of drift experienced every
 // 24 hours.  It does not affect the filter run time (filterTimeHours),
 // but will be used to adjust the time between filter runs (filterPeriodHours).
-// Use a positive value when the filter runs would be getting   later and
+// Use a negative value when the filter runs would be getting   later and
 //   later.
-// Use a negative value when the filter runs would be getting earlier and
+// Use a positive value when the filter runs would be getting earlier and
 // earlier.
 //
-const long driftAdjustSeconds = -60 ;
+const long driftAdjustSeconds = 60 ;
 //
 //  Calculated constants
 //
@@ -121,6 +132,11 @@ void setup()
 	digitalWrite(ledPin, OFF) ;
 	reduceUnusedPinPower() ;
 	lastActionTime = millis() ;
+#ifdef DEBUG0
+	Serial.begin(115200) ;
+	Serial.print("filterPeriodMillis should be 86,400,000 but is ") ;
+	Serial.println(filterPeriodMillis) ;
+#endif
 	}
 void loop()
 {
