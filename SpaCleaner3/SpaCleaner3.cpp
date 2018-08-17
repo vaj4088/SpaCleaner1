@@ -76,7 +76,7 @@ const unsigned long buttonOnTime = 375 ; 		// Turn on button or relay for
 												// this many milliseconds.
 const unsigned long buttonToButtonTime = 3000 ;	// Wait between buttons for
 												// this many milliseconds.
-const double filterTimeHours = 2.0 ;	// How long to filter,
+const double filterTimeHours = 1.0 ;	// How long to filter,
 										// in decimal hours.
 const double filterPeriodHours = 24 ;	// How long from start of filter to
 										// next start of filter,
