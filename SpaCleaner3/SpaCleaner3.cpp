@@ -28,6 +28,12 @@
 // IBS  Ian Shef  9 Dec 2016
 //
 
+// Change button pressed time (buttonOnTime) from 500 milliseconds to 375
+// milliseconds.  Change filter time (filterTimeHours) from 2.0 hours to
+// 1.0 hours.
+// IBS  Ian Shef  17 Aug 2018
+//
+
 // From Nick Gammon in Australia on 31 July 2016
 // from URL http://www.gammon.com.au/millis
 /*
