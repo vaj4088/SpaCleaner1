@@ -34,6 +34,10 @@
 // IBS  Ian Shef  17 Aug 2018
 //
 
+// Change button pressed time (buttonOnTime) from 375 milliseconds to 750
+// milliseconds.
+// IBS  Ian Shef   1 Aug 2020
+//
 // From Nick Gammon in Australia on 31 July 2016
 // from URL http://www.gammon.com.au/millis
 /*
@@ -78,7 +82,7 @@ const int minutesPerHour = 60 ;
 const unsigned long powerOnDelayMillis = 5000 ; // Wait this many
 												// milliseconds
 												// after power has been applied.
-const unsigned long buttonOnTime = 375 ; 		// Turn on button or relay for
+const unsigned long buttonOnTime = 750 ; 		// Turn on button or relay for
 												// this many milliseconds.
 const unsigned long buttonToButtonTime = 3000 ;	// Wait between buttons for
 												// this many milliseconds.
